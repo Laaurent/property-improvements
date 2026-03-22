@@ -27,7 +27,7 @@ export async function analyzePhotos(photos: File[]): Promise<{
   rooms: RoomAnalysis[];
   improvements: Improvement[];
 }> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
   // Convert photos to base64
   const photosData = await Promise.all(
