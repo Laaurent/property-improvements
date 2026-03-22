@@ -108,21 +108,31 @@ Pour chaque amélioration :
 Analyse maintenant les photos ci-dessous.
 `;
 
-  const result = await model.generateContent([
-    { text: prompt },
-    ...photosData,
-  ]);
+  try {
+    const result = await model.generateContent([
+      { text: prompt },
+      ...photosData,
+    ]);
 
-  const response = result.response.text();
-  
-  // Extract JSON from response (handle markdown code blocks)
-  const jsonMatch = response.match(/```json\s*([\s\S]*?)\s*```/) || 
-                     response.match(/\{[\s\S]*\}/);
-  
-  if (!jsonMatch) {
-    throw new Error('Failed to parse Gemini response');
+    const response = result.response.text();
+    console.log('Gemini response length:', response.length);
+    
+    // Extract JSON from response (handle markdown code blocks)
+    const jsonMatch = response.match(/```json\s*([\s\S]*?)\s*```/) || 
+                       response.match(/\{[\s\S]*\}/);
+    
+    if (!jsonMatch) {
+      console.error('Failed to extract JSON from response:', response.substring(0, 500));
+      throw new Error('Failed to parse Gemini response - no JSON found');
+    }
+
+    const jsonText = jsonMatch[1] || jsonMatch[0];
+    console.log('Extracted JSON length:', jsonText.length);
+    
+    const data = JSON.parse(jsonText);
+    return data;
+  } catch (error) {
+    console.error('Gemini API error:', error);
+    throw new Error(`Analyse failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
-
-  const data = JSON.parse(jsonMatch[1] || jsonMatch[0]);
-  return data;
 }
