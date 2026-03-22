@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Upload, Loader2, TrendingUp, Home } from 'lucide-react';
 import { analyzePhotos, type RoomAnalysis, type Improvement } from './lib/gemini';
-import './simple.css';
+
 
 function App() {
   const [photos, setPhotos] = useState<File[]>([]);
